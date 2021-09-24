@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "webserver.fullname" . }}-config
+  namespace: AnyTech365
+data:
+  nginx.conf: |-
+    server {
+        listen              443 ssl;
+        server_name         www.example.com;
+        ssl_certificate     www.example.com.crt;
+        ssl_certificate_key www.example.com.key;
+        ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers         HIGH:!aNULL:!MD5;
+
+        location / {
+            return 200 '{{ .Values.nginx.conf.message }}\n';
+            add_header Content-Type text/plain;
+        }
+
+        location /release/name {
+            return 200 '{{ .Release.Name }}\n';
+            add_header Content-Type text/plain;
+        }
+
+        location /release/revision {
+            return 200 '{{ .Release.Revision }}\n';
+            add_header Content-Type text/plain;
+        }
+    }
